@@ -1,6 +1,4 @@
-const { queryObjects } = require("v8");
-
-class Node {
+export class Node {
   left;
   right;
   constructor(data) {
@@ -10,7 +8,7 @@ class Node {
   }
 }
 
-class Tree {
+export class Tree {
   constructor(array) {
     this.array = array;
     this.root = this.buildTree(this.array);
@@ -286,40 +284,21 @@ class Tree {
     this.root = null;
     this.root = this.buildTree(this.array);
   }
+
+  prettyPrint(node, prefix = "", isLeft = true) {
+    if (node === null) {
+      return;
+    }
+    if (node.right !== null) {
+      this.prettyPrint(
+        node.right,
+        `${prefix}${isLeft ? "│   " : "    "}`,
+        false
+      );
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+    if (node.left !== null) {
+      this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
+  }
 }
-
-let array = [0, 2, 10, 17, 18, 1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-// let array = [1, 2, 3];
-const tree = new Tree(array);
-const prettyPrint = (node, prefix = "", isLeft = true) => {
-  if (node === null) {
-    return;
-  }
-  if (node.right !== null) {
-    prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-  }
-  console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-  if (node.left !== null) {
-    prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-  }
-};
-
-function callback(node) {
-  console.log(node.data);
-}
-
-tree.insert(1000);
-// tree.deleteItem(7);
-prettyPrint(tree.root);
-// tree.levelOrderForEachIterative(callback, tree.root, 0);
-// tree.preOrderForEach(callback, tree.root);
-// console.log(" ");
-// tree.inOrderForEach(callback, tree.root);
-// console.log(" ");
-// tree.postOrderForEach(callback, tree.root);
-
-console.log(tree.height(8));
-console.log(tree.isBalanced());
-tree.rebalance();
-console.log(tree.isBalanced());
-prettyPrint(tree.root);
