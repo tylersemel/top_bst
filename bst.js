@@ -1,3 +1,5 @@
+const { queryObjects } = require("v8");
+
 class Node {
   left;
   right;
@@ -140,6 +142,82 @@ class Tree {
 
     return this.#findRecur(this.root, value);
   }
+
+  levelOrderForEachIterative(callback) {
+    if (!callback) {
+      throw new Error("A callback is required!");
+    }
+    let queue = []; //FIFO
+
+    queue.push(this.root);
+
+    //while queue is not empty
+    while (queue.length > 0) {
+      let node = queue.shift();
+
+      if (node.left != null) {
+        queue.push(node.left);
+      }
+      if (node.right != null) {
+        queue.push(node.right);
+      }
+
+      callback(node);
+    }
+  }
+
+  // levelOrderForEachRecur(callback, root, level) {
+  //   if (!callback) {
+  //     throw new Error("A callback is required!");
+  //   }
+
+  //   if (root == null) return;
+
+  //   callback(root);
+
+  //   this.levelOrderForEachRecur(callback, root.left, level + 1);
+  //   this.levelOrderForEachRecur(callback, root.right, level + 1);
+  // }
+
+  inOrderForEach(callback, root) {
+    if (!callback) {
+      throw new Error("A callback is required!");
+    }
+
+    if (root == null) return;
+
+    this.inOrderForEach(callback, root.left);
+
+    callback(root);
+
+    this.inOrderForEach(callback, root.right);
+  }
+
+  preOrderForEach(callback, root) {
+    if (!callback) {
+      throw new Error("A callback is required!");
+    }
+
+    if (root == null) return;
+    callback(root);
+
+    this.preOrderForEach(callback, root.left);
+    this.preOrderForEach(callback, root.right);
+  }
+
+  postOrderForEach(callback, root) {
+    if (!callback) {
+      throw new Error("A callback is required!");
+    }
+
+    if (root == null) return;
+
+    this.postOrderForEach(callback, root.left);
+
+    this.postOrderForEach(callback, root.right);
+
+    callback(root);
+  }
 }
 
 let array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
@@ -159,8 +237,17 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
+function callback(node) {
+  console.log(node.data);
+}
+
 // tree.insert(10);
 // tree.insert(11);
 // tree.deleteItem(7);
 prettyPrint(tree.root);
-console.log(tree.find(7));
+// tree.levelOrderForEachIterative(callback, tree.root, 0);
+tree.preOrderForEach(callback, tree.root);
+console.log(" ");
+tree.inOrderForEach(callback, tree.root);
+console.log(" ");
+tree.postOrderForEach(callback, tree.root);
