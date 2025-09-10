@@ -167,19 +167,6 @@ class Tree {
     }
   }
 
-  // levelOrderForEachRecur(callback, root, level) {
-  //   if (!callback) {
-  //     throw new Error("A callback is required!");
-  //   }
-
-  //   if (root == null) return;
-
-  //   callback(root);
-
-  //   this.levelOrderForEachRecur(callback, root.left, level + 1);
-  //   this.levelOrderForEachRecur(callback, root.right, level + 1);
-  // }
-
   //left, node, right
   inOrderForEach(callback, root) {
     if (!callback) {
@@ -224,7 +211,7 @@ class Tree {
   }
 
   #findHeight(value, root) {
-    if (root == null) return 0;
+    if (root == null) return -1;
 
     let left = this.#findHeight(value, root.left) + 1;
     let right = this.#findHeight(value, root.right) + 1;
@@ -239,6 +226,25 @@ class Tree {
     if (!node) return null;
 
     return this.#findHeight(value, node);
+  }
+
+  #findDepth(root, value) {
+    if (root.data == value) return 0;
+
+    if (value < root.data && root.left != null) {
+      return this.#findDepth(root.left, value) + 1;
+    }
+    if (value > root.data && root.right != null) {
+      return this.#findDepth(root.right, value) + 1;
+    }
+  }
+
+  depth(value) {
+    let node = this.find(value);
+
+    if (!node) return null;
+
+    return this.#findDepth(this.root, value);
   }
 }
 
