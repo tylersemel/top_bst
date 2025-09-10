@@ -281,6 +281,11 @@ class Tree {
 
     return true;
   }
+
+  rebalance() {
+    this.root = null;
+    this.root = this.buildTree(this.array);
+  }
 }
 
 let array = [0, 2, 10, 17, 18, 1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
@@ -315,3 +320,6 @@ prettyPrint(tree.root);
 
 console.log(tree.height(8));
 console.log(tree.isBalanced());
+tree.rebalance();
+console.log(tree.isBalanced());
+prettyPrint(tree.root);
