@@ -211,9 +211,10 @@ class Tree {
   }
 
   #findHeight(value, root) {
-    if (root == null) return -1;
+    if (root == null) return 0;
 
     let left = this.#findHeight(value, root.left) + 1;
+
     let right = this.#findHeight(value, root.right) + 1;
 
     return left > right ? left : right;
@@ -225,7 +226,7 @@ class Tree {
 
     if (!node) return null;
 
-    return this.#findHeight(value, node);
+    return this.#findHeight(value, node) - 1;
   }
 
   #findDepth(root, value) {
@@ -245,6 +246,40 @@ class Tree {
     if (!node) return null;
 
     return this.#findDepth(this.root, value);
+  }
+
+  isBalanced() {
+    //go through each node and check height of each left and right subtree
+    //left, node, right
+    let queue = []; //FIFO
+
+    queue.push(this.root);
+
+    //while queue is not empty
+    while (queue.length > 0) {
+      let node = queue.shift();
+      let leftSubtreeHeight = 0;
+      let rightSubtreeHeight = 0;
+      if (node.left != null) {
+        queue.push(node.left);
+        leftSubtreeHeight = this.height(node.left.data);
+      }
+      if (node.right != null) {
+        queue.push(node.right);
+        rightSubtreeHeight = this.height(node.right.data);
+      }
+
+      if (
+        (leftSubtreeHeight > rightSubtreeHeight &&
+          leftSubtreeHeight - rightSubtreeHeight > 1) ||
+        (leftSubtreeHeight < rightSubtreeHeight &&
+          rightSubtreeHeight - leftSubtreeHeight > 1)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 
@@ -268,8 +303,7 @@ function callback(node) {
   console.log(node.data);
 }
 
-// tree.insert(10);
-// tree.insert(11);
+tree.insert(1000);
 // tree.deleteItem(7);
 prettyPrint(tree.root);
 // tree.levelOrderForEachIterative(callback, tree.root, 0);
@@ -280,3 +314,4 @@ prettyPrint(tree.root);
 // tree.postOrderForEach(callback, tree.root);
 
 console.log(tree.height(8));
+console.log(tree.isBalanced());
