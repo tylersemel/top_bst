@@ -126,18 +126,19 @@ class Tree {
   }
 
   #findRecur(root, value) {
-    if (root.data == value) return root.data;
+    if (root.data == value) return root;
 
     if (value < root.data && root.left != null) {
       return this.#findRecur(root.left, value);
-    } else if (value > root.data && root.right != null) {
+    }
+    if (value > root.data && root.right != null) {
       return this.#findRecur(root.right, value);
     }
   }
 
   find(value) {
     if (!this.array.includes(value)) {
-      return "testomg";
+      return null;
     }
 
     return this.#findRecur(this.root, value);
@@ -179,6 +180,7 @@ class Tree {
   //   this.levelOrderForEachRecur(callback, root.right, level + 1);
   // }
 
+  //left, node, right
   inOrderForEach(callback, root) {
     if (!callback) {
       throw new Error("A callback is required!");
@@ -193,18 +195,21 @@ class Tree {
     this.inOrderForEach(callback, root.right);
   }
 
+  //root, left, right
   preOrderForEach(callback, root) {
     if (!callback) {
       throw new Error("A callback is required!");
     }
 
     if (root == null) return;
+
     callback(root);
 
     this.preOrderForEach(callback, root.left);
     this.preOrderForEach(callback, root.right);
   }
 
+  //left, right, root
   postOrderForEach(callback, root) {
     if (!callback) {
       throw new Error("A callback is required!");
@@ -213,17 +218,33 @@ class Tree {
     if (root == null) return;
 
     this.postOrderForEach(callback, root.left);
-
     this.postOrderForEach(callback, root.right);
 
     callback(root);
   }
+
+  #findHeight(value, root) {
+    if (root == null) return 0;
+
+    let left = this.#findHeight(value, root.left) + 1;
+    let right = this.#findHeight(value, root.right) + 1;
+
+    return left > right ? left : right;
+  }
+
+  height(value) {
+    //given a node, find it's height
+    let node = this.find(value);
+
+    if (!node) return null;
+
+    return this.#findHeight(value, node);
+  }
 }
 
-let array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+let array = [0, 2, 10, 17, 18, 1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 // let array = [1, 2, 3];
 const tree = new Tree(array);
-console.log(tree.root);
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null) {
     return;
@@ -246,8 +267,10 @@ function callback(node) {
 // tree.deleteItem(7);
 prettyPrint(tree.root);
 // tree.levelOrderForEachIterative(callback, tree.root, 0);
-tree.preOrderForEach(callback, tree.root);
-console.log(" ");
-tree.inOrderForEach(callback, tree.root);
-console.log(" ");
-tree.postOrderForEach(callback, tree.root);
+// tree.preOrderForEach(callback, tree.root);
+// console.log(" ");
+// tree.inOrderForEach(callback, tree.root);
+// console.log(" ");
+// tree.postOrderForEach(callback, tree.root);
+
+console.log(tree.height(8));
