@@ -22,7 +22,6 @@ export class Tree {
   }
 
   buildTree(array) {
-    //return root
     if (array.length <= 0) return null;
 
     const mid = Math.floor(array.length / 2);
@@ -35,33 +34,29 @@ export class Tree {
     return root;
   }
 
-  #insertRecur(root, value) {
-    if (root == null) {
+  #insertRecur(value, node = this.root) {
+    if (node === null) {
       return new Node(value);
     }
 
-    if (root.data == value) {
-      return root;
+    if (value < node.data) {
+      node.left = this.#insertRecur(value, node.left);
+    } else if (value > node.data) {
+      node.right = this.#insertRecur(value, node.right);
     }
 
-    if (value < root.data) {
-      root.left = this.#insertRecur(root.left, value);
-    } else {
-      root.right = this.#insertRecur(root.right, value);
-    }
-
-    return root;
+    return node;
   }
 
   insert(value) {
     if (this.array.includes(value)) {
-      return;
+      return null;
     }
 
     this.array.push(value);
     this.array.sort((a, b) => a - b);
 
-    this.#insertRecur(this.root, value);
+    return this.#insertRecur(value);
   }
 
   #deleteRecur(root, value) {
