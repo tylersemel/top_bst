@@ -59,27 +59,27 @@ export class Tree {
     return this.#insertRecur(value);
   }
 
-  #deleteRecur(root, value) {
-    if (root == null) return null;
+  #deleteRecur(value, node = this.root) {
+    if (node === null) return null;
 
-    if (value < root.data) {
-      root.left = this.#deleteRecur(root.left, value);
-    } else if (value > root.data) {
-      root.right = this.#deleteRecur(root.right, value);
+    if (value < node.data) {
+      node.left = this.#deleteRecur(value, node.left);
+    } else if (value > node.data) {
+      node.right = this.#deleteRecur(value, node.right);
     } else {
-      if (root.left == null) {
-        return root.right;
+      if (node.left === null) {
+        return node.right;
       }
-      if (root.right == null) {
-        return root.left;
+      if (node.right === null) {
+        return node.left;
       }
 
-      let succ = this.#getSuccerssor(root);
-      root.data = succ.data;
-      root.right = this.#deleteRecur(root.right, succ.data);
+      let succ = this.#getSuccerssor(node);
+      node.data = succ.data;
+      node.right = this.#deleteRecur(succ.data, node.right);
     }
 
-    return root;
+    return node;
   }
 
   #getSuccerssor(curr) {
@@ -93,7 +93,7 @@ export class Tree {
 
   deleteItem(value) {
     if (!this.array.includes(value)) {
-      return;
+      return null;
     }
 
     this.array.splice(
@@ -101,17 +101,19 @@ export class Tree {
       1
     );
 
-    this.#deleteRecur(this.root, value);
+    return this.#deleteRecur(value);
   }
 
-  #findRecur(root, value) {
-    if (root.data == value) return root;
+  #findRecur(value, node = this.root) {
+    if (!node) return null;
 
-    if (value < root.data && root.left != null) {
-      return this.#findRecur(root.left, value);
+    if (node.data == value) return node;
+
+    if (value < node.data) {
+      return this.#findRecur(value, node.left);
     }
-    if (value > root.data && root.right != null) {
-      return this.#findRecur(root.right, value);
+    if (value > node.data) {
+      return this.#findRecur(value, node.right);
     }
   }
 
@@ -120,7 +122,7 @@ export class Tree {
       return null;
     }
 
-    return this.#findRecur(this.root, value);
+    return this.#findRecur(value);
   }
 
   levelOrderForEachIterative(callback) {
@@ -129,7 +131,7 @@ export class Tree {
     }
     let queue = []; //FIFO
 
-    queue.push(this.root);
+    if (this.root) queue.push(this.root);
 
     //while queue is not empty
     while (queue.length > 0) {
@@ -232,7 +234,9 @@ export class Tree {
     //left, node, right
     let queue = []; //FIFO
 
-    queue.push(this.root);
+    if (this.root) {
+      queue.push(this.root);
+    }
 
     //while queue is not empty
     while (queue.length > 0) {
