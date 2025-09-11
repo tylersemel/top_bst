@@ -10,43 +10,29 @@ export class Node {
 
 export class Tree {
   constructor(array) {
-    this.array = array;
-    this.root = this.buildTree(this.array);
-  }
-
-  bstRecur(array, start, end) {
-    if (start > end) return null;
-
-    let mid = Math.floor(start + (end - start) / 2);
-
-    let root = new Node(array[mid]);
-
-    root.left = this.bstRecur(array, start, mid - 1);
-    root.right = this.bstRecur(array, mid + 1, end);
-
-    return root;
-  }
-
-  #compare(a, b) {
-    if (a > b) return 1;
-    if (a == b) return 0;
-    if (a < b) return -1;
-  }
-
-  buildTree(array) {
-    //first sort array, then remove duplicates
-    array.sort(this.#compare);
-
-    let result = [];
-
+    array.sort((a, b) => a - b);
+    this.array = [];
     for (let i = 0; i < array.length; i++) {
-      if (!result.includes(array[i])) {
-        result.push(array[i]);
+      if (!this.array.includes(array[i])) {
+        this.array.push(array[i]);
       }
     }
 
+    this.root = this.buildTree(this.array);
+  }
+
+  buildTree(array) {
     //return root
-    return this.bstRecur(result, 0, result.length - 1);
+    if (array.length <= 0) return null;
+
+    const mid = Math.floor(array.length / 2);
+
+    const root = new Node(array[mid]);
+
+    root.left = this.buildTree(array.slice(0, mid));
+    root.right = this.buildTree(array.slice(mid + 1));
+
+    return root;
   }
 
   #insertRecur(root, value) {
@@ -73,7 +59,7 @@ export class Tree {
     }
 
     this.array.push(value);
-    this.array.sort(this.#compare);
+    this.array.sort((a, b) => a - b);
 
     this.#insertRecur(this.root, value);
   }
